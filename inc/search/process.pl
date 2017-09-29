@@ -5,9 +5,9 @@ use FindBin '$Bin';
 ## Copy@right Alisam Technology see License.txt
 
 our ($browserLang, $mrand, $motorparam, $motor, $motor1, $motor2, $motor3, $motor4, $motor5, $mrandom, $googleDomain, $prandom, $proxy, $psx, $mlevel, $ifinurl, $unique, $mdom, 
-     $searchRegex, $Target, $dork, $ua, $Id, $MsId, $V_SEARCH,$nolisting, $msites, $zone, $agent, $noping);
+     $searchRegex, $Target, $dork, $ua, $Id, $MsId, $V_SEARCH,$nolisting, $msites, $zone, $agent, $noExist, $notIn, $expHost, $expIp);
 our (@motor, @TODO, @V_TODO, @c, @TT, @DS, @DT, @dorks, @SCAN_TITLE, @motors, @mrands, @aTsearch, @proxies);
-our ($limit, $post, $get, $replace, $output, $data, $noQuery, $V_IP, $with, $eMails, $searchIps, $brandom, $noinfo, $timeout, $method, @OTHERS, @ErrT);
+our ($limit, $post, $get, $replace, $output, $data, $noQuery, $V_IP, $with, $eMails, $searchIps, $brandom, $noinfo, $timeout, $method, $command, @OTHERS, @ErrT);
 ## SET ENGINES
 if (defined $mlevel) {
   if (defined $mrandom || $mrandom) { push @motor, $mrand; }
@@ -49,10 +49,8 @@ sub doSearch {
         my $dorkToCheeck=checkFilters($dork);
         $URL=filterUr($URL, $dorkToCheeck);
       }
-	  if ((defined $msites) || (defined $Target) || (defined $mdom)) {               
-		$URL=removeProtocol($URL);
-        $URL=~s/\/.*//s;
-        $URL=checkUrlSchema($URL);
+	  if ((defined $msites) || (defined $Target) || (defined $mdom) || (defined $expHost) || (defined $expIp)) {               
+		$URL=getHost($URL);
       }
       my $vURL=validateURL($URL);
       if ($vURL) {
@@ -81,33 +79,31 @@ sub printMotor {
   print "\n";
 }
 
-## PRINT INFO PROXY
-sub printProxy {
-  if (defined $proxy || defined $prandom || $prandom || $proxy) {
-    if (defined $prandom || $prandom) {
-      print $c[1]."    $ErrT[21] $c[8]  New Identity !\n";
-    }
-    print $c[1]."    $DS[11]  $c[10] [$psx]\n";
-  }
-}
-
 ## PRINT INFO DORK
 sub printDork {
   my @dor=@_;
-  print $c[1]."[::] $DS[0]     $c[10]";     
-  for my $dor(@dor) {
-    $dor=~s/\s+$//;
-    $dor=~s/ip%3A//g;
-    print "[$dor]";
+  if (defined $msites) {
+    print $c[1]."[::] SCAN    $c[10] [Server Sites]";
+  }else{
+    print $c[1]."[::] $DS[0]     $c[10]";     
+    for my $dor(@dor) {
+      if (length $dor>0) {    
+        $dor=~s/\s+$//;
+        $dor=~s/ip%3A//g;
+        print "[$dor] ";
+      }
+    }
   }
   print "\n";
   if ($zone) { print $c[1]."[::] ZONE    $c[10] [$zone]\n"; }
   print $c[1]."[::] $DS[18]   $c[10] [$mlevel]\n";
   if (defined $ifinurl || defined $unique || $unique || defined $searchRegex) {
     print $c[1]."[::] $SCAN_TITLE[24]   $c[10]";
-    if (defined $ifinurl) { print "[$TT[19]\]\n"; }
-    if (defined $unique || $unique) { print "[$DS[30]\]\n"; }
-    if (defined $searchRegex) { print "[$searchRegex]\n"; }
+    if (defined $noExist) { print "[None]"; }
+    if (defined $ifinurl) { print "[$TT[19]\]"; }
+    if (defined $unique || $unique) { print "[$DS[30]\]"; }
+    if (defined $searchRegex) { print " [$searchRegex]"; }
+    print "\n"; 
   }
   ptak();
 }
@@ -119,25 +115,33 @@ sub msearch {
   printMotor(@motors);
   printDork(@dorks);
   print $c[4]."[i] $DT[31]\n";
+  
+  $mlevel+=-10 if $mlevel > 9;
+  $mlevel =~ s/(substr $mlevel, -1)/0/g;
+  
   for my $motor(@motors) {
-    for my $dork(@dorks) {
-      if (defined $Target) { $dork="ip%3A".$dork; }
+    for my $dork(@dorks) {     
+      if (defined $Target) {
+        if ($dork!~ /(ip:|ip%3A)/) {
+          $dork="ip:".$dork;
+        }
+      }
       if ($zone) { $dork="site:$zone ".$dork; }    
       $dork=~s/\s+$//;
       $dork=~s/ /+/g;
-      $dork=~s/:/%3A/g;
       $dork=~s/^(\+|\s+)//g;
-      $motor=~s/MYDORK/$dork/g;
-      my $mlevel=$mlevel;
-      $mlevel=$mlevel+=-10 if $mlevel > 9;
-      for(my $npages=0;$npages<=$mlevel;$npages+=10) {
-        $motor=~s/MYNPAGES/$npages/g;
-        my $search=$ua->get("$motor");
-        $search->as_string;
-        my $Res=$search->content;
-        doSearch($Res, $motor); 
+      if (length $dork > 0) {      
+        $motor=~s/MYDORK/$dork/g;
+        for(my $npages=0;$npages<=$mlevel;$npages+=10) {
+          $motor=~s/MYNPAGES/$npages/g;
+          my $search=$ua->get("$motor");
+          $search->as_string;
+          my $Res=$search->content;
+          doSearch($Res, $motor);         
+          $motor=~s/=$npages/=MYNPAGES/ig;
+        }
+        $motor=~s/\Q$dork/MYDORK/ig;
       }
-      $motor=~s/$dork/MYDORK/g;
     }
   }
   printSearch();
@@ -169,7 +173,7 @@ sub printInfoUrl {
   our ($command, $port);
 
   if ($o<$limit) {
-    if ((!defined $noinfo && !$noinfo) && (!defined $noping)) {
+    if (!defined $noinfo && !$noinfo) {
       if (defined $noQuery) { print $c[1]."    $DS[16] $c[10]  $DS[40]\n"; }
       printProxy();
       if (defined $brandom || $brandom) {
@@ -180,7 +184,7 @@ sub printInfoUrl {
       if (defined $get || ($method and $method eq "get")) { print "$DS[15]\n"; }
       elsif (defined $post || ($method and $method eq "post")) { print "$DT[32]\n"; }
       else{ print "$DS[15]\n"; }
-      if ($timeout !=10) { print $c[1]."    $TT[10] ".$c[10]."$timeout s\n"; }  
+      if ($timeout !=10) { print $c[1]."    $TT[10] ".$c[10]."$timeout s\n"; }
       if ((defined $replace)&&(defined $with)) { print $c[1]."    $OTHERS[14]   "; print $c[10]."[$replace] => [$with]\n"; }
     }
   }
@@ -191,22 +195,20 @@ sub browseUrl {
   my ($URL1, $form)=@_;
   printInfoUrl($URL1, $data);
   my ($response, $html, $status, $serverheader, $command, $port);
-  if (!defined $noping) {
-    ($response, $html, $status, $serverheader)=getHtml($URL1, $form);
-    my $o=OO();
-    if ($o<$limit) {
-      if ((!defined $noinfo && !$noinfo) || (!defined $noping)) {
-        if ($response->previous) { print $c[1]."    $DS[1]    $c[4]$DT[36]", $response->request->uri, "\n"; }    
-        print $c[1]."    $DS[3]    ". $c[10]."$DS[13] $status\n"; print $c[1]."    $DS[2]  ";
-        if (defined $serverheader) { print $c[10]."$serverheader\n"; } 
-        else { print $c[10]."$DT[35]\n"; }
-        my $ips=checkExtraInfo($URL1);
-        print $c[1]."    $DS[10]      ";
-        if ($ips) { my $ad=inet_ntoa($ips); print $c[10]."$ad\n"; }
-        else{ print $c[10]."$DT[35]\n"; }
-        checkCms($html); checkErrors($html);
-        if (defined $output) { print $c[1]."    OUTPUT  ". $c[10]."$output\n"; }
-      }
+  ($response, $html, $status, $serverheader)=getHtml($URL1, $form);
+  my $o=OO();
+  if ($o<$limit) {
+    if (!defined $noinfo && !$noinfo) {
+      if ($response->previous) { print $c[1]."    $DS[1]    $c[4]$DT[36]", $response->request->uri, "\n"; }    
+      print $c[1]."    $DS[3]    ". $c[10]."$DS[13] $status\n"; print $c[1]."    $DS[2]  ";
+      if (defined $serverheader) { print $c[10]."$serverheader\n"; } 
+      else { print $c[10]."$DT[35]\n"; }
+      my $ips=checkExtraInfo($URL1);
+      print $c[1]."    $DS[10]      ";
+      if ($ips) { my $ad=inet_ntoa($ips); print $c[10]."$ad\n"; }
+      else{ print $c[10]."$DT[35]\n"; }
+      checkCms($html); checkErrors($html);
+      if (defined $output) { print $c[1]."    OUTPUT  ". $c[10]."$output\n"; }
     }
   }
   return ($response, $status, $html);
@@ -250,7 +252,10 @@ sub getRegex {
   my ($URL1, $html, $reg)=@_;
   my $o=OO();
   if ($o<$limit) {
-    if (!defined $searchIps and !defined $eMails) { print $c[1]."    $SCAN_TITLE[25]  $c[10] [$reg]\n"; }
+    if (!defined $searchIps and !defined $eMails) { print $c[1]."    $SCAN_TITLE[25]  $c[10]";
+      if (defined $noExist) { print "[None: "; }
+      print "$reg] \n";
+    }
     titleSCAN();
     my $hssab=0;
     while ($html=~/$reg/g) {
@@ -265,15 +270,19 @@ sub getRegex {
         }
       }
     }
-    if ($hssab<1) { noResult(); }else{ print "\n"; }
+    if ($hssab<1) {
+      noResult();
+    }else{
+      print "\n";
+      if (defined $command) { checkExternComnd($URL1, $command); }
+    }
   }
 }
 
 ## EXECUTE EXTERN PROCESS COMMANDS
 sub getComnd {
   my ($URL1, $comnd)=@_;
-  $URL1=~s/(\%27|\<|\>|\%25|\')(.*)//ig;
-    
+  $URL1=~s/(\sAND|\%27|\<|\>|\"\<|\"\>|\'\<|\'\>|\"\;|\<\%25|\%|\').*//ig;
   if ($URL1=~/($V_IP)/) {
     $URL1=removeProtocol($URL1);
     if ($comnd=~/-PORT/) {
@@ -299,25 +308,24 @@ sub getComnd {
       if ($ips) { my $ad=inet_ntoa($ips); $comnd=~s/\-\-HOSTIP/$ad/ig; }
       else{ print "$c[2] $TT[11]\n"; }
     }elsif ($comnd=~/\-HOST/) {
-      $URL1=removeProtocol($URL1);   
-      $URL1=~s/\/.*//s;
-      $URL1=checkUrlSchema($URL1);
-      $comnd=~s/\-\-HOST/$URL1/ig;
+      $URL1=getHost($URL1);   
+      $comnd=~s/\-\-HOST/"$URL1"/ig;
     }elsif ($comnd=~/\-TARGET/) {
-      $comnd=~s/\-\-TARGET/$URL1/ig;
+      $comnd=~s/\-\-TARGET/"$URL1"/ig;
     }
   }
   
-  print "$c[1]    $DT[24]   $c[10]$comnd\n";
+  print "$c[10]            => $c[10]$comnd\n";
   print $c[8]."            ";
-  system($comnd); print "\n";
+  system("$comnd"); print "\n";
 }
 
 our ($exploit, $p, $shell, @exploits);
+
 ## MAKE SCAN WITH EXPLOIT IN ARRAY
 sub getExploitArrScan{
   my ($URL, $arr, $filter, $result, $reg, $comnd, $isFilter, $pm, $pmarr, $data)=@_;
-  if (defined $exploit) {
+  if (defined $exploit || defined $expHost || defined $expIp) {
     my $lc=scalar(grep { defined $_} @exploits);
     my $count3=0;
     for my $exp(@exploits) {

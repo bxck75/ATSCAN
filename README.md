@@ -4,17 +4,17 @@
 <p align="center"> <b>Advanced Search / Dork / Mass Exploitation Scanner <br>فاحص متقدم لبحث و استغلال الثغرات بالجملة </b></p>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
   <tr>
-    <td align="center"><b>Alisam Technology is not responsible for any misuse, damage caused by this script or attacking targets without prior mutual consent!
+    <td align="center"><b>[!] LEGAL DISCLAIMER: </br> Alisam Technology is not responsible for any misuse, damage caused by this script or attacking targets without prior mutual consent! It is your responsibility to obey laws!
     </b></td>
   </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="2" width="100%">
   <tr>
     <td width="100px" class="main2"><b>Tool:</b></td>
-    <td width="780px" class="main2"><b>ATSCAN version 12.1</b></td>
+    <td width="780px" class="main2"><b>ATSCAN V 12.3.3 </b></td>
   </tr>
   <tr>
-    <td width="100px" class="main2"><b>Codename:</b></td><td width="780px">Anon4t</td>
+    <td width="100px" class="main2"><b>Codename:</b></td><td width="780px">4n0n4t</td>
   </tr>
   <tr>
     <td width="100px" class="main2"><b>AUTHOR:</b></td><td width="780px">Ali MEHDIOUI</td>
@@ -45,7 +45,7 @@
         &#x25cf; Random user agent. <br/>&#x25cf; Random engine.<br/> &#x25cf; Extern commands execution.<br/>
         &#x25cf; XSS / SQLI / LFI / AFD scanner.<br /> &#x25cf; Filter wordpress and Joomla sites in the server. <br />
         &#x25cf; Find Admin page.<br />&#x25cf; Decode / Encode Base64 / MD5<br/> &#x25cf; Ports scan. <br/>&#x25cf; Extract IPs<br/>&#x25cf; Extract E-mails. <br/>
-        &#x25cf; Auto detect errors. <br/> &#x25cf; Auto detect Cms.<br/>&#x25cf; Post data.<br/>&#x25cf; Auto sequence repeater.<br/>&#x25cf; Validation.<br/>&#x25cf; Post and Get method<br/>&#x25cf; And more...
+        &#x25cf; Auto detect errors. <br/> &#x25cf; Auto detect Cms.<br/>&#x25cf; Post data.<br/>&#x25cf; Auto sequence repeater.<br/>&#x25cf; Validation.<br/>&#x25cf; Post and Get method<br/>&#x25cf; Interactive and Normal use mode.<br/>&#x25cf; And more...
     </p></td>
   </tr>
 </table>
@@ -99,8 +99,8 @@
   <tr>
     <td class="main">
       Portable Execution: perl ./atscan.pl<br/>
-      Installed Tool Execution: atscan
-    </td>
+      Installed Tool Execution: atscan<br/>
+      Menu: Applications >  Web Application analysis > atscan </td>
   </tr>
 </table>
 <table border="0" cellpadding="2" cellspacing="5" width="100%">
@@ -119,10 +119,11 @@
   </tr>
   <tr>
     <td align="center" width="890px">
-    <img src="http://i.imgur.com/PW0q9us.jpg" /> <br/><br/>
-    <img src="http://i.imgur.com/PtYAitD.jpg" /> <br/><br/>
-    <img src="http://i.imgur.com/6Eg3bxo.jpg" /> <br/><br/>
-    <img src="http://i.imgur.com/EK96MSQ.jpg" /> <br/><br/>
+    <img src="http://i.imgur.com/4Y8VhwG.jpg" /> <br/><br/>
+    <img src="https://i.imgur.com/07sJtSr.jpg" /> <br/><br/>
+    <img src="https://i.imgur.com/IoReBpZ.jpg" /> <br/><br/>
+    <img src="http://i.imgur.com/oRFCwRK.jpg" /> <br/><br/>
+    <img src="http://i.imgur.com/aeBfATH.jpg" /> <br/><br/> 
     </td>
   </tr>
 </table>
@@ -144,7 +145,7 @@
           Set proxy list [EX: --proxy list.txt] </td>
       </tr> 
       <tr>
-        <td width="200px" class="main">-m</td>
+        <td width="200px" class="main">--motor|m</td>
         <td class="main">Set engine motors default bing EX: -m [Bing: 1][Google: 2][Ask: 3][Yandex: 4][Sogou: 5][All: all]</td>
       </tr> 
       <tr>
@@ -168,29 +169,37 @@
         <td class="main">set browser time out</td> 
       </tr> 
       <tr>
-        <td width="200px" class="main">--dork / -d    </td>
+        <td width="200px" class="main">--dork/-d </td>
         <td class="main"> Dork to search [Ex: house [OTHER]cars [OTHER]hotel] 
       </tr> 
       <tr>
-        <td width="200px" class="main">-t</td>
+        <td width="200px" class="main">--target/-t</td>
         <td class="main">Target </td>
       </tr> 
       <tr>
-        <td width="200px" class="main">--level / -l</td>
+        <td width="200px" class="main">--level/-l</td>
         <td class="main"> Scan level (+- Number of page results to scan) </td>
-      </tr> 
+      </tr>
       <tr>
-        <td width="200px" class="main">-p </td>
+        <td width="200px" class="main">--zone </td>
+        <td class="main"> Search engine country.</td>
+      </tr>
+      <tr>
+        <td width="200px" class="main">--param/-p </td>
         <td class="main"> Set test parameter EX:id,cat,product_ID </td>
       </tr> 
       <tr>
-        <td width="200px" class="main">--save / -s </td>
+        <td width="200px" class="main">--save/-s </td>
         <td class="main"> Output.</td>
-      </tr> 
+      </tr>
+      <tr>
+        <td width="200px" class="main">--source</td>
+        <td class="main"> Html output file</td>
+      </tr>
       <tr>
         <td width="200px" class="main">--content</td>
         <td class="main"> Print request content</td>
-      </tr> 
+      </tr>
       <tr>
         <td width="200px" class="main">--data</td>
         <td class="main"> Post and Get forms. See examples </td>
@@ -228,9 +237,9 @@
         <td class="main"> Jump extra results info.</td>
       </tr>
       <tr>
-        <td width="200px" class="main">--noping </td>
-        <td class="main"> No host ping.</td>
-      </tr> 
+        <td width="200px" class="main">--ping </td>
+        <td class="main"> Host ping.</td>
+      </tr>
       <tr>
         <td width="200px" class="main">--limit </td>
         <td class="main"> Limit max positive scan results.</td>
@@ -250,7 +259,15 @@
       <tr>
         <td width="200px" class="main">--sregex </td>
         <td class="main"> Get targets with exact regex matching</td>
-      </tr> 
+      </tr>
+      <tr>
+        <td width="200px" class="main">--none </td>
+        <td class="main"> Get negative validation or engine regex matching</td>
+      </tr>
+      <tr>
+        <td width="200px" class="main">--notin </td>
+        <td class="main"> Get targets where string doesnot exist in html</td>
+      </tr>
       <tr>
         <td width="200px" class="main">--unique  </td>
         <td class="main"> Get targets with exact dork matching</td>
@@ -272,9 +289,17 @@
         <td class="main"> Use your own payloads instead of tool ones</td>
       </tr> 
       <tr>
-        <td width="200px" class="main">--exp </td>
-        <td class="main"> Exploit/Payload </td>
-      </tr> 
+        <td width="200px" class="main">--exp/-e </td>
+        <td class="main"> Exploit/Payload will be added to full target </td>
+      </tr>
+      <tr>
+        <td width="200px" class="main">--expHost </td>
+        <td class="main"> Exploit will be added to the host </td>
+      </tr>
+      <tr>
+        <td width="200px" class="main">--expIp</td>
+        <td class="main"> Exploit will be added to the host ip</td>
+      </tr>
       <tr>
         <td width="200px" class="main">--sql </td>
         <td class="main"> Xss scan </td>
@@ -372,7 +397,7 @@
         <td class="main"> Remove string value from Query url [ex: site.com/index.php?id=string]  </td> 
       </tr> 
       <tr>
-        <td width="200px" class="main">--command /-c  </td>
+        <td width="200px" class="main">--command/-c  </td>
         <td class="main"> Extern Command to execute</td>
       </tr> 
       <tr>
@@ -381,12 +406,12 @@
       </tr> 
       <tr>
         <td width="200px" class="main"> rang(x-y) </td>
-           <td class="main">EX: --exp "/index.php?id=rang(1-9)" --sql OR -t "site.com/index.php?id=rang(1-9)" --sql<br>
+           <td class="main">EX: --expHost "/index.php?id=rang(1-9)" --sql OR -t "site.com/index.php?id=rang(1-9)" --sql<br>
            site.com/index.php?id=1 -> 9.</td>
       </tr> 
       <tr>
         <td width="200px" class="main"> repeat(txt-y) </td>
-           <td class="main">EX: --exp "/index.php?id=repeat(../-9)wp-config.php" --sql OR -t "site.com/index.php?id=../wp-config.php"<br>
+           <td class="main">EX: --expHost "/index.php?id=repeat(../-9)wp-config.php" --sql OR -t "site.com/index.php?id=../wp-config.php"<br>
            In site.com/index.php?id=../wp-config.php then site.com/index.php?id=../../wp-config.php 9 times </td>
       </tr>       
       <tr>
@@ -410,8 +435,8 @@
         <td class="main">User configuration.</td>
       </tr>
       <tr>
-        <td width="200px" class="main">--pass</td>
-        <td class="main">Set a password for tool use.</td>
+        <td width="200px" class="main">--interactive</td>
+        <td class="main">Tool interactive interface.</td>
       </tr>
       <tr>
         <td width="200px" class="main">--uninstall</td>
@@ -433,9 +458,9 @@
         or --proxy list.txt Ex: --proxy my_proxies.txt <br/>
         <hr>
         &#x25cf; <b>RANDOM: </b> <br/>
-        Random proxy --proxy-random [proxy  list.txt] <br/>
-        Random browser --b-random <br/>
-        Random engine --m-random <br/>
+        Random proxy: --proxy-random [proxy  list.txt] <br/>
+        Random browser: --b-random <br/>
+        Random engine: --m-random <br/>
         <hr>
        &#x25cf; <b>SET HEADERS:</b> <br>
        atscan --dork [dork / dorks.txt] --level [level] --header "Authorization:Basic YWRtaW46YWRtaW4 [OTHER]keep_alive:1" <br/>
@@ -447,7 +472,7 @@
        Set engine: atscan --dork [dork] --level [level] -m [Bing: 1][Google: 2][Ask: 3][Yandex: 4][Sogou: 5][All: all] <br/>
        Set selective engines: atscan -d [dork] -l [level] -m 1,2,3.. <br/>
        Search with many dorks: atscan --dork dork1 [OTHER]dork2 [OTHER]dork3] --level [level]    <br/>
-       Search and rand: atscan -d [dork] -l [level] --exp "/index.php?id=rang(1-9)" --sql   <br/>
+       Search and rand: atscan -d [dork] -l [level] --expHost "/index.php?id=rang(1-9)" --sql   <br/>
        Get Server sites: atscan -t [ip] --level [value] --sites <br/>
        Get Server sites: atscan -t "[ip from]-[ip to]" --level [value] --sites <br/>
        Get Server sites: atscan -t "ip1 [OTHER]ip2" --level [value] --sites <br/>
@@ -469,8 +494,8 @@
         <hr>
        &#x25cf; <b>REPEATER:</b> <br/>
        atscan -t site.com?index.php?id=rang(1-10) --sql <br/>
-       atscan -t [target] --exp "/index.php?id=rang(1-10)" --sql <br/>
-       atscan -t [target] --exp "/index.php?id=repeat(../-9)wp-config.php" <br/>
+       atscan -t [target] --expHost "/index.php?id=rang(1-10)" --sql <br/>
+       atscan -t [target] --expHost "/index.php?id=repeat(../-9)wp-config.php" <br/>
         <hr>
        &#x25cf; <b>PORTS</b> <br/>
        atscan -t [ip] --port [port] [--udp / --tcp] <br/>
@@ -496,7 +521,7 @@
         <hr>
        &#x25cf; <b>MULTIPLE SCANS: </b><br/>
        atscan --dork [dork> --level [10] --sql --lfi --wp ..<br/>
-       atscan --dork [dork> --level [10] --replace [string] --with [string] --exp [payload] [--sql / --lfi / --wp /...]<br/>
+       atscan --dork [dork> --level [10] --replace [string] --with [string] --exp/expHost [payload] [--sql / --lfi / --wp /...]<br/>
        atscan -t [ip] --level [10] [--sql / --lfi / --wp /...]<br/>
        atscan -t [target] [--sql / --lfi / --wp /...] <br/>
         <hr>
@@ -505,26 +530,32 @@
         <hr>
        &#x25cf; <b>SEARCH VALIDATION: </b><br/>
        atscan -d [dork / dorks.txt] -l [level] --status [code] / --valid [string] <br/>
+       atscan -d [dork / dorks.txt] -l [level] --status [code] --none (Positive when status does\'nt match)<br/>
+       atscan -d [dork / dorks.txt] -l [level] --status [code] / -v [string] / --ifinurl [string] / --sregex [regex] --none<br/>
        atscan -d [dork / dorks.txt] -l [level] --ifinurl [string] <br/>
+       atscan -d [dork / dorks.txt] -l [level] --sregex [regex] --valid [string] <br/>
        atscan -d [dork / dorks.txt] -l [level] --regex [regex] --valid [string] <br/>
        atscan -d [dork / dorks.txt] -l [level] --unique  <br/>
         <hr>
        &#x25cf; <b>SCAN VALIDATION: </b><br/>
        atscan -t [target / targets.txt] [--status [code] / --valid [string] <br/>
-       atscan -d [dork / dorks.txt] -l [level] --exp [payload] --status [code] / --valid [string] <br/>
+       atscan -d [dork / dorks.txt] -l [level] --exp/expHost [payload] --status [code] / --valid [string] <br/>
        atscan -d [dorks.txt] -l [level] --replace [string] --with [string] --status [code] / --valid [string] <br/>
        atscan -d [dork / dorks.txt] -l [level] [--admin / --sql ..] --status [code] / --valid [string] <br/>  
        atscan -d [dorks.txt] -l [level] --replace [string] --with [string] --status [code] / --valid [string] <br/>
        atscan -d [dorks.txt] -l [level] --replace [string] --with [string] --full --status [code] / --valid [string] <br/>
-       atscan -d [dorks.txt] -l [level] --replace [string] --with [string] --exp [payload] --status [code] / --valid [string] <br/>
+       atscan -d [dorks.txt] -l [level] --replace [string] --with [string] --exp/expHost [payload] --status [code] / --valid [string] <br/>
        atscan --data "name:userfile[DATAFILE]value:file.txt" -v [string] / --status [code] [--post / --get]<br/>
        atscan -d [dork / dorks.txt] -l [level] [--sql / --shost ..] --status [code] / --valid [string] <br/>
-        <hr>
+       atscan -t [target / targets.txt] --valid [string] --not in [string]<br/>        <hr>
        &#x25cf; <b>UPDATE TOOL:</b> <br/> 
        atscan --update <br/>
         <hr>
        &#x25cf; <b>UNINSTALL TOOL: </b><br/>     
        atscan --uninstall
+        <hr>
+       &#x25cf; <b>THANKS TO: </b><br/>     
+       Blackarch linux & dragos os developers.
        </td></tr></table>     
     </td>
   </tr>

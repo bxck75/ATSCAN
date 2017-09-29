@@ -6,7 +6,8 @@ use POSIX qw(strftime);
 ## Copy@right Alisam Technology see License.txt
 
 ## FUNCTS
-our ($payloads, $exploit, $data, $mlevel, $dork, $Target, $V_RANG, $noQuery, $mdom, $replace, $with, $full, $unique, $ifinurl, $pat2, $limit, $port, $output, $ifend, $ipUrl, $noinfo, $V_IP);
+our ($payloads, $exploit, $expHost, $data, $mlevel, $dork, $Target, $V_RANG, $noQuery, $mdom, $replace, $with, $full, $unique, $ifinurl, $pat2, $limit, $port, $output, $ifend, $ipUrl, $noinfo,
+     $V_IP, $expIp, $interactive);
 our (@aTscans, @data, @userArraysList, @exploits, @dorks, @aTsearch, @aTcopy, @aTtargets, @c, @OTHERS, @DS, @DT, @TT, @proxies, @ErrT);
 
 ## PRINT FILES 
@@ -23,19 +24,23 @@ sub is_folder_empty {
 }
 
 ## USER PRE-CONFIGURATION
-our($userSetting, $proxy, $prandom, $password, $brandom, $mrandom, $zone, $motor, $nobanner, $beep, $timeout, $dateupdate, $activeUconf, $freq, $method, $checkVersion, $get, $post);
+our($userSetting, $proxy, $prandom, $password, $brandom, $mrandom, $zone, $motor, $nobanner, $beep, $timeout, $dateupdate, $freq, $method, $checkVersion, $get, $post, $scriptbash);
+
+##
 sub checkSetting {
   my $object=$_[0];
-  my @ans;
+  my ($l1, @ans);
   open(F2, $userSetting);
   while (my $l=<F2>) {
     chomp $l;
-    if ($l=~/$object\s(.*)\s$object/) {
+    if ($l=~/$object\s(.*)/) {
+      $l1=$l;
       @ans=split(" ", $l);
-    }    
+      $l1=~s/$ans[0]\s//ig;
+    }
   }
   close(F2);
-  return $ans[1];
+  return $l1;
 }
 
 ## BUILT ARRAYS
@@ -66,49 +71,53 @@ sub getProx {
 
 ## DELETE USER SETTING
 sub deletSetting {
-  our (@configuration, @LI2, $userSetting);
+  my @config=get_configuration();
+  our (@LI2, $userSetting);
   my $val=$_[0];
-  for my $lines(@configuration) {
+  unlink $userSetting;
+  open FH, ">", $userSetting;
+  for my $lines(@config) {
     if ($lines!~/^$val\s(.*)/) {
-      push @LI2, $lines;
+      print FH "$lines";
     }
   }
-  unlink $userSetting; @configuration=();
-  for my $lines2(@LI2) { printFile($userSetting, $lines2); }
+  close FH;
 }
 
 ## CHECK USER CONFIGURATION
-$activeUconf=checkSetting("config");
 $password=checkSetting("password");
-
-if ($activeUconf) {
-  $proxy=checkSetting("proxy") if !defined $proxy;
-  $prandom=checkSetting("proxy-random") if !defined $prandom;
-  $payloads=checkSetting("payload") if !defined $payloads;
-  $brandom=checkSetting("b-random") if !defined $brandom;
-  $mrandom=checkSetting("m-random") if !defined $mrandom;  
-  $mlevel=checkSetting("level") if !defined $mlevel;
-  $method=checkSetting("method") if !defined $get and !defined $post;
-  $zone=checkSetting("zone");
-  $motor=checkSetting("engine") if !defined $motor;
-  $nobanner=checkSetting("nobanner") if !defined $nobanner;
-  $noinfo=checkSetting("noinfo") if !defined $noinfo;
-  $beep=checkSetting("beep") if !defined $beep;
-  $ifend=checkSetting("ifend") if !defined $ifend;
-  $unique=checkSetting("unique") if !defined $unique;
-  $timeout=checkSetting("timeout") if !defined $timeout;
-  $dateupdate=checkSetting("update");
-  $freq=checkSetting("freq") if !defined $freq;
-}
+$interactive=checkSetting("interactive") if !defined $interactive;
+$proxy=checkSetting("proxy") if !defined $proxy;
+$prandom=checkSetting("proxy-random") if !defined $prandom;
+$payloads=checkSetting("payload") if !defined $payloads;
+$brandom=checkSetting("b-random") if !defined $brandom;
+$mrandom=checkSetting("m-random") if !defined $mrandom;  
+$mlevel=checkSetting("level") if !defined $mlevel;
+$method=checkSetting("method") if !defined $get and !defined $post;
+$zone=checkSetting("zone") if !defined $zone;
+$motor=checkSetting("engine") if !defined $motor;
+$nobanner=checkSetting("nobanner") if !defined $nobanner;
+$noinfo=checkSetting("noinfo") if !defined $noinfo;
+$beep=checkSetting("beep") if !defined $beep;
+$ifend=checkSetting("ifend") if !defined $ifend;
+$unique=checkSetting("unique") if !defined $unique;
+$timeout=checkSetting("timeout") if !defined $timeout;
+$dateupdate=checkSetting("update");
+$freq=checkSetting("freq") if !defined $freq;
 ## SET PROXY
 if (defined $proxy || $proxy) { @proxies=getProx($proxy); }
 if (defined $prandom || $prandom) { @proxies=getProx($prandom); }
+
+## DATA ARRAYS
+if (defined $data) { @data=buildArraysLists($data); }
 
 ## USER ARRAYS
 if (defined $payloads || $payloads) { @userArraysList=buildArraysLists($payloads); }
 
 ## EXPLOITS ARRAYS
 if (defined $exploit) { @exploits=buildArraysLists($exploit); }
+if (defined $expHost) { @exploits=buildArraysLists($expHost); }
+if (defined $expIp) { @exploits=buildArraysLists($expIp); }
 
 ## MAX POSITIVE SCAN RESULTS
 ## Chnage for more positive scans!!
@@ -157,7 +166,7 @@ our ($system, $agent, $ua);
 sub get_timeout {
   my $time;
   if (defined $timeout || $timeout) { $time=$timeout; }
-  else{ $time=10; }
+  else{ $time=5; }
   return $time;
 }
 
@@ -197,9 +206,12 @@ sub make_freq {
 ## GET CURRENT IDENTITY
 sub get_ipAddress {
   my $ipadress;
-  my $r=$ua->get($ipUrl);
-  if ($r->is_success) {
-    if ($r->content=~m/$V_IP/g) { $ipadress="$1"; }
+  my $fd=0;
+  while (!$fd) {
+    my $r=$ua->get($ipUrl);
+    if ($r->is_success) {
+      if ($r->content=~m/$V_IP/g) { $ipadress="$1"; $fd++; }      
+    }
   }
   return $ipadress;
 }
@@ -355,9 +367,6 @@ if (defined $mlevel) {
   }
 }
 
-## TIMER
-sub timer { our $date; print "[$date]"; }
-
 ## CHECK VERSION LOG
 sub compareme {
   my ($same);
@@ -417,7 +426,7 @@ sub restaureSearch { my @aTsearch=(); push @aTsearch, @aTcopy; @aTcopy=(); }
 ## REMOVE DUPLICATE DOMAINES WPAFD/JOOMRFI/SUBDOMAINS/ADMIN
 sub removeDupDom { 
   makeCopy();
-  for my $URL(@aTsearch) { $URL=removeProtocol($URL); $URL=~s/\/.*//s; $URL=checkUrlSchema($URL); saveCopy($URL); }
+  for my $URL(@aTsearch) { $URL=getHost($URL); saveCopy($URL); }
   my @aTsearch=checkDuplicate(@aTsearch); IfDup();
 }
 
@@ -437,9 +446,25 @@ sub checkDuplicate {
 ## REMOVE URLS PROTOCOL
 sub removeProtocol { 
   my $URL=$_[0];
-  my %replace=('http://' => '', 'https://'=>'', 'ftp://'=>'', 'ftps://'=>'', 'socks(4|5)?://'=>'');
+  my %replace=('http://' => '', 'https://'=>'', 'ftp://'=>'', 'ftps://'=>'', 'socks://'=>'', 'socks4://'=>'', 'socks5://'=>'');
   $URL=~s/$_/$replace{ $_}/g for keys %replace;
   return $URL;
+}
+
+## GET PORTS PROTOCOL
+sub portProtocol { 
+  my $por=$_[0];
+  my %proto=('21'=>'FTP', '22'=>'SSH', '23'=>'TELNET', '25'=>'SMTP', '53'=>'DNS', '69'=>'TFTP', '80'=>'HTTP', '109'=>'POP2', '110'=>'POP3', '123'=>'NTP', '137'=>'NETBIOS-NS', '135'=>'MSRPC',
+  '138'=>'NETBIOS-DGM', '139'=>'NETBIOS-SSN', '143'=>'IMAP', '156'=>'SQL-SERVER', '389'=>'LDAP', '443'=>'HTTPS', '444'=>'SNPP', '445'=>'SHARING', '546'=>'DHCP-CLIENT', '547'=>'DHCP-SERVER',
+  '554'=>'RTSP', '902'=>'ISS-REALSECURE', '912'=>'APEX-MESH', '995'=>'POP3-SSL', '993'=>'IMAP-SSL', '2086'=>'WHM/CPANEL', '2087'=>'WHM/CPANEL', '2082'=>'CPANEL', '2083'=>'CPANEL',
+  '2869'=>'ICSLAP', '3306'=>'MYSQL', '5357'=>'WSDAPI', '8443'=>'PLESK', '10000'=>'VIRTUALMIN/WEBMIN');
+  my $portProtocol="UNKNOWN";
+  for my $key (keys %proto) {
+    if ($key eq $por) {
+      $portProtocol=$proto{$key};
+    }
+  }
+  return $portProtocol;
 }
 
 ## REMOVE QUERY STRING
@@ -457,16 +482,27 @@ sub control {
   if (defined $noQuery) {
     $URL=removeQuery($URL);
   }
-  if (defined $mdom) {               
-	$URL=removeProtocol($URL);
-    $URL=~s/\/.*//s;
+  if (defined $mdom || defined $expHost) {               
+	$URL=getHost($URL);
   }
   if (defined $replace) {
-	if (index($URL, $replace) != -1) {
-      $URL=~s/$replace(.*)/$replace/g if defined $full; 
-      $URL=~s/$replace/$with/ig;
-    }
-  }    
+    our $full;
+    if (defined $full) { $URL=~s/$replace.*/$replace/g; }
+    $URL=~s/\Q$replace/$with/ig;
+  }
+  $URL=checkUrlSchema($URL);
+  if (defined $expIp) {
+    my $ips=checkExtraInfo($URL);
+    if ($ips) { $URL=inet_ntoa($ips); }else{ print "$c[2] $TT[11]\n"; next; }
+  }
+  return $URL;
+}
+
+## GET DOMAIN
+sub getHost {
+  my $URL=$_[0];
+  $URL=removeProtocol($URL);   
+  $URL=~s/\/.*//s;
   $URL=checkUrlSchema($URL);
   return $URL;
 }
@@ -503,12 +539,22 @@ sub checkFilters {
 ## GET FILTRED URLS
 sub filterUr {
   my ($URL, $dorkToCheeck)=@_;
-  if (defined $unique || $unique) {
-    if (index($URL, $dorkToCheeck) != -1) { $URL=$URL; }else{ $URL=""; }
-  }
-  if (defined $ifinurl) {
-    if (index($URL, $ifinurl) != -1) { $URL=$URL; }else{ $URL=""; }
-  }
+  our $noExist;
+  if (defined $noExist) {
+    if (defined $unique || $unique) {
+      if (index($URL, $dorkToCheeck) != -1) { $URL=""; }else{ $URL=$URL; }
+    }
+    if (defined $ifinurl) {
+      if (index($URL, $ifinurl) != -1) { $URL=""; }else{ $URL=$URL; }
+    }
+  }else{
+    if (defined $unique || $unique) {
+      if (index($URL, $dorkToCheeck) != -1) { $URL=$URL; }else{ $URL=""; }
+    }
+    if (defined $ifinurl) {
+      if (index($URL, $ifinurl) != -1) { $URL=$URL; }else{ $URL=""; }
+    }
+  } 
   return $URL;
 }
 
@@ -530,7 +576,6 @@ sub checkHeaders {
 ## COUNT RESULTS
 sub OO { my $o=scalar(grep { defined $_} @aTscans); return $o; }
 
-
 ## END SCAN PROCESS
 sub subfin {
   our $ifend;
@@ -548,8 +593,13 @@ sub countResultLists {
 ## SEARCH REGEX FILTER
 sub doRegex { 
   my $searchRegex=$_[0];
+  our $noExist;
   for my $URL(@aTsearch) {
-    if ($URL=~/$searchRegex/) { saveCopy($URL); }
+    if (defined $noExist) {
+      if ($URL!~/$searchRegex/) { saveCopy($URL); }
+    }else{
+      if ($URL=~/$searchRegex/) { saveCopy($URL); }
+    }
   }
 }
 
@@ -581,15 +631,22 @@ sub title {
 }
 
 ## CHECK IF THERE MORE SCANS TO DO
-our ($WpSites, $JoomSites, $xss, $lfi, $JoomRfi, $WpAfd, $adminPage, $subdomain, $mupload, $mzip, $searchIps, $eMails, $regex, $command);
-our @z=($WpSites, $JoomSites, $xss, $lfi, $JoomRfi, $WpAfd, $adminPage, $subdomain, $mupload, $mzip, $searchIps, $eMails, $regex, $port, $data, $command);
+our ($WpSites, $JoomSites, $xss, $lfi, $JoomRfi, $WpAfd, $adminPage, $subdomain, $mupload, $mzip, $searchIps, $eMails, $regex, $command, $ping);
+our @z=($WpSites, $JoomSites, $xss, $lfi, $JoomRfi, $WpAfd, $adminPage, $subdomain, $mupload, $mzip, $searchIps, $eMails, $regex, $port, $data, $ping);
 sub getK {
   our @z;
   my ($x, $y)=@_; my $k=0; splice @z, $x, $y;
   for (@z) { if (defined $_) { $k++; } } return $k;  
 }
 
-## UPDATE
+## EXTERN COMMAND EXECUTION
+sub checkExternComnd {
+  my ($URL1, $command)=@_;
+  print $c[1]."    $DT[24]  $c[10]....................................................................\n";
+  getComnd($URL1, $command);
+}
+
+## CHMOD 777
 sub nochmod {
   my ($path, $action)=@_;
   sleep(1);
@@ -599,5 +656,66 @@ sub nochmod {
 sub cc { sleep(1); print $c[3]."OK\n"; }
 sub bb { sleep(1); print $c[4]."Failed!\n"; }
 sub dd { sleep(1); print $c[4]."[!] $DT[8]\n"; }
+
+## PING IP
+sub checkIsAlive {
+  my ($URL, $psx1)=@_;
+  $URL= removeProtocol($URL) if $URL !~/$V_IP/;
+  my $doping=0;
+  my $p = Net::Ping->new("icmp", $timeout);
+  if ($p->ping($URL)) { $doping++; }
+  $p->close();
+  if ($doping==0) {
+    titleSCAN();
+    print "$c[2]$TT[22] $TT[23]\n";
+  }else{
+    print "$c[1]    $TT[21] $c[3] $TT[22] $TT[24]\n";
+    saveme($URL, "") if !defined $port;
+    if (defined $command) { checkExternComnd($URL, $command); }
+  }
+  sleep(1);
+  return $doping;
+}
+
+## SOCKET PROXY
+sub getHostAndPort {
+  my $px=$_[0];
+  $px=removeProtocol($px);
+  my @sk=split(":", $px);
+  return ($sk[0], $sk[1]);
+}
+
+## CHECK PROXY RANDOM USE
+sub checkProxyUse1 {
+  my ($ProxyAddr, $ProxyPort);
+  if (defined $proxy || $proxy || defined $prandom || $prandom) {
+    if (defined $prandom || $prandom) {
+      newIdentity();
+    }
+    printProxy();
+    ($ProxyAddr, $ProxyPort) = getHostAndPort($psx);
+  }
+  return ($ProxyAddr, $ProxyPort);
+}
+
+## PRINT INFO PROXY
+sub printProxy {
+  if (defined $proxy || defined $prandom || $prandom || $proxy) {
+    if (defined $prandom || $prandom) {
+      print $c[1]."    $ErrT[21] $c[8]  New Identity !\n";
+    }
+    print $c[1]."    $DS[11]  $c[10] [$psx]\n";
+  }
+}
+
+## CHECK SCAN ARGUMENTS
+sub Targs {
+  our ($msites, $Hstatus, $validText);
+  my @Targs=($xss, $data, $lfi, $ifinurl, $WpSites, $Hstatus, $validText, $adminPage, $subdomain, $JoomRfi, $WpAfd, $msites, $port, $mupload, $mzip, $JoomSites, $eMails, $searchIps,
+             $regex, $command, $ping, $interactive);
+  my $Targ=0;
+  for (@Targs) { $Targ++ if defined $_; }
+  return $Targ;
+}
 
 1;

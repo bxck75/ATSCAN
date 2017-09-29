@@ -3,86 +3,29 @@ use strict;
 use warnings;
 use FindBin '$Bin';
 ## Copy@right Alisam Technology see License.txt
-
 ## HELP
   our (@c);
-  print $c[1]."[::] HELP\n";
-  ltak();
-  print $c[10]
-  ."   --proxy       | Set tor proxy for scans [EX: --proxy \"socks://localhost:9050\"]\n"
-  ."                 | Set proxy [EX: --proxy \"http://12.45.44.2:8080\"] \n"
-  ."                 | Set proxy list [EX: --proxy list.txt] \n"
-  ."  -m             | Set engine motors default bing EX: -m [Bing: 1][Google: 2][Ask: 3][Yandex: 4][Sogou: 5][All: all]\n"
-  ."  --proxy-random | Random proxy [EX: --proxy-random list.txt] or --proxy-random \"socks://localhost:9050\"]\n"
-  ."  --m-random     | Random of all disponibles engines \n"
-  ."  --brandom      | Random all disponibles agents \n"
-  ."  --timeout      | set browser timeout (in seconds)\n"
-  ."  --freq         | Random time frequency (in seconds) \n" 
-  ."  --dork | -d    | Dork to search [Ex: house [OTHER]cars [OTHER]hotel] \n"
-  ."  -t             | Target \n"
-  ."  --level | -l   | Scan level (+- Number of page results to scan) \n"
-  ."  -p             | Set test parameter EX:id,cat,product_ID \n"
-  ."  --save | -s    | Output file.\n"
-  ."  --source       | Html output folder.\n" 
-  ."  --content      | Print response content.\n"  
-  ."  --data         | data. See examples \n"
-  ."  --post         | Use post method \n"
-  ."  --get          | Use get method \n"
-  ."  --header       | Set headers. \n"
-  ."  --host         | Domain name [Ex: site.com] \n"
-  ."  --nobanner     | Hide tool banner\n"
-  ."  --beep         | Produce beep sound if positive scan found.\n"
-  ."  --ifend        | Produce beep sound when scan process is finished.\n"
-  ."  --noinfo       | Jump extra results info.\n"
-  ."  --limit        | Pause when scan reaches the defined amount of positive results.\n"
-  ."  --valid | -v   | Validate by string \n"
-  ."  --status       | Validate by http header status \n"
-  ."  --ifinurl      | Get targets with exact string matching\n"
-  ."  --sregex       | Get targets with exact regex matching\n"
-  ."  --unique       | Get targets with exact dork matching\n"
-  ."  --replace      | String to replace \n"
-  ."  --with         | String to replace with \n"
-  ."  --full         | --replace --full Will replace all url parametres from string to the end\n"
-  ."  --payload      | Use your own payloads instead of tool ones\n"
-  ."  --exp          | Exploit/Payload \n"
-  ."  --sql          | Xss scan \n"
-  ."  --lfi          | Local file inclusion \n"
-  ."  --joomrfi      | Scan for joomla local file inclusion.\n"
-  ."  --shell        | Shell link [Ex: http://www.site.com/shell.txt] \n"
-  ."  --wpafd        | Scan wordpress sites for arbitery file download\n"
-  ."  --admin        | Get site admin page \n"
-  ."  --shost        | Get site subdomains \n"
-  ."  --tcp          | TCP port \n"
-  ."  --udp          | UDP port \n"
-  ."  --sites        | Sites in the server \n"
-  ."  --wp           | Wordpress sites in the server\n"
-  ."  --joom         | Joomla sites in the server\n"
-  ."  --upload       | Get sites with upload files in the server  \n"
-  ."  --zip          | Get sites with zip files in the server \n"
-  ."  --md5          | Convert to md5 \n"
-  ."  --encode64     | Encode base64 string \n"
-  ."  --decode64     | decode base64 string \n"
-  ."  --TARGET       | Will be replaced by target in extern command \n"
-  ."  --HOST         | Will be replaced by host in extern command \n"
-  ."  --HOSTIP       | Will be replaced by host IP in extern command \n"
-  ."  --PORT         | Will be replaced by open port in extern command \n"
-  ."  --ip           | Crawl to get Ips\n"
-  ."  --regex        | Crawl to get strings matching regex\n"
-  ."  --noquery      | Remove string value from Query url [ex: site.com/index.php?id=string] \n"  
-  ."  --command      | Extern Command to execute\n"
-  ."  --email        | Get emails \n"
-  ."  rang(x-y)      | EX: --exp \"/index.php?id=rang(1-9)\" --sql OR -t \"site.com/index.php?id=rang(1-9)\" --sql\n"
-  ."                 | site.com/index.php?id=1->9 \n"
-  ."  repeat(txt-y)  | EX: --exp \"/index.php?id=repeat(../-9)wp-config.php\" --sql OR -t \"site.com/index.php?id=../wp-config.php\"\n"
-  ."                 | In site.com/index.php?id=../wp-config.php then site.com/index.php?id=../../wp-config.php 9 times\n"
-  ."  [DATA/DATAFILE]| To separate data values ex: --data \"name:username [DATA]email:xxxxxx [DATA]pass:xxxxx\"\n"
-  ."                 | Wordlist: --data \"name:username [DATA]email:xxxx\@xx.com [DATAFILE]pass:\/root/Desktop\/list.txt\"\n"
-  ."  [OTHER]        | To separate all others values (dork exploit payload proxy target..) ex: --dork \"dork1 [OTHER]DORK2 [OTHER]DORK3\"\n"
-  ."  --pass         | Set password for tool use. \n"  
-  ."  --config       | Set configuration. \n"  
-  ."  --update       | Update tool. \n"  
-  ."  --uninstall    | Uninstall tool \n\n";
-  
+  interHelp();
+  print ""
+  ."$c[5] --wp          $c[10] | Wordpress sites in the server\n"
+  ."$c[5] --joom        $c[10] | Joomla sites in the server\n"
+  ."$c[5] --sql         $c[10] | Xss scan \n"
+  ."$c[5] --lfi         $c[10] | Local file inclusion \n"
+  ."$c[5] --joomrfi     $c[10] | Scan for joomla local file inclusion.\n"
+  ."$c[5] --data        $c[10] | data. See examples \n"
+  ."$c[5] --email       $c[10] | Collect emails \n"
+  ."$c[5] --ip          $c[10] | Collect Ips\n"
+  ."$c[5] --wpafd       $c[10] | Scan wordpress sites for arbitery file download\n"
+  ."$c[5] --admin       $c[10] | Get site admin page \n"
+  ."$c[5] --shost       $c[10] | Get site subdomains \n"
+  ."$c[5] --sites       $c[10] | Sites in the server \n"
+  ."$c[5] --upload      $c[10] | Get sites with upload files in the server  \n"
+  ."$c[5] --zip         $c[10] | Get sites with zip files in the server \n"
+  ."$c[5] --config      $c[10] | Set configuration. \n"  
+  ."$c[5] --update      $c[10] | Update tool. \n"
+  ."$c[5] --interactive $c[10] | Tool interactive interface. \n" 
+  ."$c[5] --uninstall   $c[10] | Uninstall tool \n\n";
+    
   ltak(); print $c[11]." [::] EXAMPLES: \n";
   
   ltak(); print $c[12]."  PROXY: \n".$c[10]
@@ -100,7 +43,7 @@ use FindBin '$Bin';
   ."   Set engine: atscan --dork <dork> --level <level> -m [Bing: 1][Google: 2][Ask: 3][Yandex: 4][Sogou: 5][All: all]\n"
   ."   Set selective engines: atscan -d <dork> -l <level> -m 1,2,3..\n"
   ."   Search with many dorks: atscan --dork <dork1 [OTHER]dork2 [OTHER]dork3> --level <level> \n"  
-  ."   Search and rand: atscan -d <dork> -l <level> --exp \"/index.php?id=rang(1-9)\" --sql\n"  
+  ."   Search and rand: atscan -d <dork> -l <level> --expHost \"/index.php?id=rang(1-9)\" --sql\n"  
   ."   Get Server sites: atscan -t <ip> --level <value> --sites\n"
   ."   Get Server wordpress sites: atscan -t <ip> --level <value> --wp \n"
   ."   Get Server joomla sites: atscan -t <ipbgn-ipend> --level <value> --joom \n"
@@ -121,8 +64,8 @@ use FindBin '$Bin';
   
   ltak(); print $c[12]."  REPEATER: \n".$c[10]
   ."   atscan -t \"site.com?index.php?id=rang(1-10)\" --sql\n"
-  ."   atscan -t <target> --exp \"/index.php?id=rang(1-10)\" --sql\n"
-  ."   atscan -t <target> --exp \"/index.php?id=repeat(../-9)wp-config.php\" \n\n";
+  ."   atscan -t <target> --expHost \"/index.php?id=rang(1-10)\" --sql\n"
+  ."   atscan -t <target> --expHost \"/index.php?id=repeat(../-9)wp-config.php\" \n\n";
   
   ltak(); print $c[12]."  PORTS: \n".$c[10]
   ."   atscan -t <ip> --port <port> [--udp | --tcp] \n"
@@ -148,7 +91,7 @@ use FindBin '$Bin';
   
   ltak(); print $c[12]."  MULTIPLE SCANS: \n".$c[10]
   ."   atscan --dork <dork> --level <10> --sql --lfi --wp ..\n"
-  ."   atscan --dork <dork> --level <10> --replace <string> --with <string> --exp <exploit> [--sql | --lfi | --wp |...]\n"
+  ."   atscan --dork <dork> --level <10> --replace <string> --with <string> --exp/expHost <exploit> [--sql | --lfi | --wp |...]\n"
   ."   atscan -t <ip> --level <10> [--sql | --lfi | --wp |...]\n"
   ."   atscan -t <targets> [--sql | --lfi | --wp |...]\n\n";
   
@@ -163,18 +106,19 @@ use FindBin '$Bin';
   
   ltak(); print $c[12]."  SCAN VALIDATION: \n".$c[10]
   ."   atscan -t <target | targets.txt> [--status <code> | --valid <string>] \n"
-  ."   atscan -d <dork | dorks.txt> -l <level> --exp <payload> --status <code> | --valid <string> \n"
+  ."   atscan -t <target | targets.txt> [--status <code> | --valid <string> --none] \n"
+  ."   atscan -d <dork | dorks.txt> -l <level> --exp/expHost <payload> --status <code> | --valid <string> \n"
   ."   atscan -d <dorks.txt> -l <level> --replace <string> --with <string> --status <code> | --valid <string> \n"
   ."   atscan -d <dork | dorks.txt> -l <level> [--admin | --sql ..] --status <code> | --valid <string> \n"  
   ."   atscan -d <dorks.txt> -l <level> --replace <string> --with <string> --status <code> | --valid <string>\n"
   ."   atscan -d <dorks.txt> -l <level> --replace <string> --with <string> --full --status <code> | --valid <string>\n"
-  ."   atscan -d <dorks.txt> -l <level> --replace <string> --with <string> --exp <payload> --status <code> | --valid <string>\n"
+  ."   atscan -d <dorks.txt> -l <level> --replace <string> --with <string> --exp/expHost <payload> --status <code> | --valid <string>\n"
   ."   atscan --data \"name:userfile[DATAFILE]value:file.txt\" --post -v <string> | --status <code> \n"
   ."   atscan -d <dork | dorks.txt> -l <level> [--sql | --shost ..] --status <code> | --valid <string> \n\n";
   
   ltak(); print $c[12]."  UPDATE TOOL: \n".$c[10]."   --update\n";
   
   ltak(); print $c[12]."  UNINSTALL TOOL: \n".$c[10]."   atscan --uninstall\n";
-  ltak(); ltak();
+  ltak();
 
 1;

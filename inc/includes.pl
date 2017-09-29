@@ -11,6 +11,7 @@ require "$Bin/inc/funcs.pl";
 our ($nobanner, $output, $msource);
 if (!defined $nobanner && !$nobanner) { banner(); }
 else{ mtak(); ptak(); }
+
 ## CLEAN OUTPUT 
 if (defined $output) { unlink $output if -e $output; }
 if (defined $msource) {
@@ -23,11 +24,14 @@ our $password;
 if ($password) { require "$Bin/inc/functions/log.pl"; }
 
 ## NO ARGUMENTS ##
-our ($dork, $help, $Target, $mmd5, $mencode64, $checkVersion, $data, $uninstall, $toolInfo, $config);
-our @NoArg=($dork, $help, $Target, $mmd5, $mencode64, $checkVersion, $data, $uninstall, $toolInfo, $config);
+our ($dork, $help, $Target, $mmd5, $mencode64, $checkVersion, $data, $uninstall, $toolInfo, $config, $interactive);
+our @NoArg=($dork, $help, $Target, $mmd5, $mencode64, $checkVersion, $data, $uninstall, $toolInfo, $config, $interactive);
 my $NoArg=0;
 for (@NoArg) { $NoArg++ if defined $_; }
 advise() if $NoArg<1;
+
+## TOOL CONFIGURATION
+require "$Bin/inc/functions/clientConf.pl";
 
 ## COMMANDE LINE ERRORS 
 require "$Bin/inc/errors/useErrors.pl";

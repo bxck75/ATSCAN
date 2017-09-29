@@ -4,7 +4,7 @@ use warnings;
 use FindBin '$Bin';
 ## Copy@right Alisam Technology see License.txt
 
-our ($limit, $get, $post, $Hstatus, $validText, $content, $beep, $output, $msource, @data, @c, @DT, @DS, @TT, @aTsearch, @aTscans);
+our ($limit, $get, $post, $Hstatus, $validText, $noExist, $content, $beep, $output, $msource, $notIn, $expHost, $expIp, $command, @data, @c, @DT, @DS, @TT, @aTsearch, @aTscans);
 
 ## BUILD SCAN RESULTS LISTS
 sub buildPrint {
@@ -42,10 +42,12 @@ sub titleSCAN {
   if ($o<$limit) { 
     if ((defined $Hstatus) || (defined $validText)) {
       print $c[1]."    $DS[12]   ";
-      if (defined $validText) { print $c[10]."$validText"; }
-      if (defined $Hstatus) { print $c[10]."$DS[13] $Hstatus"; }
+      if (defined $noExist) { print $c[10]."None: "; }
+      if (defined $validText) { print $c[10]."$validText "; }
+      if (defined $Hstatus) { print $c[10]."$DS[13] $Hstatus "; }
       print "\n";
     }
+    if (defined $notIn) { print $c[1]."    Filter  $c[10]\[None: $notIn]\n"; }
     print $c[1]."    $DS[4]    ";
   }
 }
@@ -59,15 +61,12 @@ sub printResults {
   my $o=OO();
   if ($o<$limit) {
     if ($result) {
-      titleSCAN() if $result && (defined $Hstatus || defined $validText);
+      titleSCAN() if $result && (defined $Hstatus || defined $validText || defined $notIn);
       validateResult($URL1, $status, $html, $response, $result);
     }
     elsif ($reg) {
       getRegex($URL1, $html, $reg); }
-    elsif ($comnd) {
-      my $cV=checkValidation($URL1, $status, $html, $response, "");
-      if ($cV) { getComnd($URL1, $comnd); }else{ titleSCAN(); noResult(); }
-    }elsif ($data) {
+    elsif ($data) {
       titleSCAN(); formData($URL1, $html, $status, $response); 
     }else{
       titleSCAN();
@@ -89,11 +88,12 @@ sub printResults {
 }
 
 our ($exploit, $replace, $noQuery);
+
 ## VALIDATE RESULTS
 sub validateResult {
   my ($URL1, $status, $html, $response, $result)=@_;
   my $cV=checkValidation($URL1, $status, $html, $response, "");        
-  if ($cV) { doPrint($URL1, $result, $html); }else{ noResult() unless (($result && (!defined $Hstatus && !defined $validText)) || ($result && (defined $exploit || defined $replace || defined $noQuery)&&(!defined $Hstatus && !defined $validText))); }
+  if ($cV) { doPrint($URL1, $result, $html); }else{ noResult() unless (($result && (!defined $Hstatus && !defined $validText && !defined $notIn)) || ($result && (defined $exploit || defined $expIp || defined $expHost || defined $replace || defined $noQuery)&&(!defined $Hstatus && !defined $validText && !defined $notIn))); }
 }
 
 ## PRINT POST DATA RESULTS
@@ -101,7 +101,7 @@ sub formData {
   my ($URL1, $html, $status, $response)=@_;
   my $o=OO();
   if ($o<$limit) {
-    if (defined $Hstatus or defined $validText) {
+    if (defined $Hstatus or defined $validText or defined $notIn) {
       validateResult($URL1, $status, $html, $response, "");
     }else{
       if (length($html)>5) { stakScan(); print $c[8]."$html\n"; }
@@ -113,10 +113,17 @@ sub formData {
 ## CHECK VALIDATION SEARCH RESULTS / TARGETS LIST
 sub checkValidation {
   my ($URL1, $status, $html, $response, $result)=@_;
-  my $cV;
-  if (defined $Hstatus) { if ($status==$Hstatus) { $cV=$URL1; }else{ $cV=""; } }
-  elsif (defined $validText) { if ($html=~/$validText/) { $cV=$URL1; }else{ $cV=""; } }
-  else{ $cV=$URL1; }
+  my $cV=$URL1;
+  if (defined $noExist || defined $Hstatus || $validText) {
+    if (defined $noExist) {
+      if (defined $Hstatus) { if ($status == $Hstatus) { $cV=""; } }
+      if (defined $validText) { if ($html=~/$validText/) { $cV=""; } }
+    }else{
+      if (defined $Hstatus) { if ($status ne $Hstatus) { $cV=""; } }
+      if (defined $validText) { if ($html!~/$validText/) { $cV=""; } }
+    }
+  }
+  if (defined $notIn) { if (index($html, $notIn) != -1) { $cV=""; } } 
   return $cV;
 }
 
@@ -125,10 +132,12 @@ sub doPrint {
   my ($URL1, $result, $html)=@_;
   my $o=OO();
   if ($o<$limit) {
-    print $c[3]."$URL1\n" unless (($result && (!defined $Hstatus && !defined $validText)) || ($result && (defined $exploit || defined $replace || defined $noQuery)&&(!defined $Hstatus && !defined $validText)));
-    if (defined $beep || $beep) { print chr(7); } saveme($URL1, "");
+    print $c[3]."$URL1\n" unless (($result && (!defined $Hstatus && !defined $validText && !defined $notIn)) || ($result && (defined $exploit || defined $expIp || defined $expHost || defined $replace || defined $noQuery)&&(!defined $Hstatus && !defined $validText && !defined $notIn)));
+    if (defined $beep || $beep) { print chr(7); }
+    saveme($URL1, "");
     if (defined $content) { dpoints(); print $c[10]."$html\n"; }
-    if (defined $msource) { printSource($URL1, $html); }   
+    if (defined $msource) { printSource($URL1, $html); }
+    if (defined $command) { checkExternComnd($URL1, $command); }
   }
 }
 
@@ -151,12 +160,6 @@ sub endScan {
     countResultLists();
     if (defined $output) { print $c[4]."[i] $DT[13] $output!\n"; }
   }else{ negative(); }
-}
-
-## COPY SCAN TO TARGETS LIST
-sub doUnlink {
-  my $o=OO();
-  if ($o>0) { @aTsearch=(); push @aTsearch, @aTscans; @aTscans=(); }
 }
 
 1;

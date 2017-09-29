@@ -4,25 +4,34 @@ use warnings;
 use FindBin '$Bin';
 ## Copy@right Alisam Technology see License.txt
 
-our ($Target, $xss, $data, $lfi, $ifinurl, $WpSites, $Hstatus, $adminPage, $subdomain, $eMails, $JoomSites, $command, $mzip, $mupload, $port, $JoomRfi, $searchIps, $mlevel, $WpAfd, $msites, $content);
-our ($regex, $V_IP, $mrandom , $tcp, $udp, $dork, $motor, $searchRegex, $replace, $with, $shell, $unique, $post, $limit, $validText, $get, , $payloads, $exploit, $method, @TT, @SCAN_TITLE, @DT, @OTHERS, @c);
+our ($Target, $xss, $data, $lfi, $ifinurl, $WpSites, $Hstatus, $adminPage, $subdomain, $eMails, $JoomSites, $command, $mzip, $mupload, $port, $JoomRfi, $searchIps, $mlevel, $WpAfd, $msites, $content, $ping);
+our ($regex, $V_IP, $mrandom, $tcp, $udp, $dork, $motor, $searchRegex, $replace, $with, $shell, $unique, $post, $limit, $validText, $get, $config, $payloads, $exploit, $method, @TT, @SCAN_TITLE, @DT, @OTHERS, @c);
 
 ## ARGUMENTS VERIFICATION (TARGET AND RANGIP)
 if (defined $Target) {
-  my @Targs=($xss, $data, $lfi, $ifinurl, $WpSites, $Hstatus, $validText, $adminPage, $subdomain, $JoomRfi, $WpAfd, $msites, $port, $mupload, $mzip, $command, $JoomSites, $eMails, $mlevel, $searchIps,
-             $regex);
-  my $Targ=0;
-  for (@Targs) { $Targ++ if defined $_; }
+  my $Targ=Targs();
+  if ($Targ<1) { print $c[4]."[!] $OTHERS[7]\n"; logoff(); }
+}
+
+if (defined $exploit or $exploit) {
+  my $Targ=Targs();
   if ($Targ<1) { print $c[4]."[!] $OTHERS[7]\n"; logoff(); }
 }
 
 ## CHECK TARGET PROTOCOL
-if ((defined $Target)&&(!defined $mlevel && !$mlevel)) { 
-  if (defined $msites and $Target=~/$V_IP/) { print $c[4]."[!] $DT[20]\n"; logoff(); }
-  if ((!-e $Target)&&($Target!~/$V_IP/)) {
+if (defined $Target) {   
+  if ((!-e $Target) && ($Target!~/$V_IP/) && !defined $ping) {
     if ($Target!~/https?:\/\//) { print $c[4]."[!] $DT[16]\n"; logoff(); }
   }
 }
+
+if (defined $msites) {
+  if (!defined $mlevel && !$mlevel) {
+    print $c[4]."[!] $DT[20]\n"; logoff();
+  }
+  if ((defined $Target) and (!-e $Target) && ($Target!~/$V_IP/)) { print $c[4]."[!] $Target $TT[20]\n"; logoff(); }
+}
+
 
 ## CHECK RANDOM PARAMS
 if (defined $mrandom && (!defined $mlevel && !$mlevel)) { print $c[4]."[!] $DT[38]\n"; logoff(); }
@@ -58,9 +67,6 @@ sub abcd {
   }
 }
 
-## CHECK VALIDATION ARGUMENTS
-if (defined $validText && defined $Hstatus) { print $c[4]."[!] $OTHERS[18]\n"; logoff(); }
-
 ## CHECK LEVEL
 if (defined $mlevel || $mlevel) {
   if ($mlevel!~/^[0-9,.E]+$/) { print $c[4]."$TT[15]\n"; logoff(); }
@@ -95,11 +101,12 @@ sub advise_no_file {
   print $c[2]."[!] Cannot whrite in $no_file !\n"; logoff();
 }
 
-## CHECK PAYLOAD ARGUMENT
-if (defined $payloads) {
-  if (!defined $xss && !defined $lfi && !defined $JoomRfi && !defined $WpAfd && !defined $adminPage && !defined $subdomain && !defined $mupload && !defined $mzip) {
-    print $c[4]."[!] $OTHERS[10] $payloads\n"; logoff();
-  }
+## Negative scans
+our $noExist;
+if (defined $noExist) {
+  if (!defined $Hstatus && !defined $validText && !defined $ifinurl && !defined $searchRegex){
+    print $c[4]."[!] You cannot use --none command here! Use -h for help\n"; logoff();
+  }  
 }
 
 1;
